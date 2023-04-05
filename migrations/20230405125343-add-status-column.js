@@ -14,15 +14,14 @@ exports.setup = function (options, seedLink) {
   seed = seedLink;
 };
 
-exports.up = async function (db) {
-  await db.createTable("users", {
-    username: { type: "string", primaryKey: true, notNull: true },
-    password: { type: "string", notNull: true },
+exports.up = function (db) {
+  return db.addColumn("transactions", "status", {
+    type: "int",
   });
 };
 
 exports.down = function (db) {
-  return db.dropTable("users");
+  return db.removeColumn("transactions", "status");
 };
 
 exports._meta = {

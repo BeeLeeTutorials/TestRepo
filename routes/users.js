@@ -1,9 +1,7 @@
 const express = require("express");
 const loginForm = require("../forms/login");
 const registerForm = require("../forms/register");
-const checkAuth = require("../middlewares/checkAuth");
-const Users = require("../dal/users");
-const hash = require("../utils/hash");
+const UsersService = require("../services/users");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -31,7 +29,8 @@ router.get("/login", (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const user = await Users.verifyUser(username, password);
+  const svc = new UsersService();
+  const user = await svc.login(username, password);
   if (!user) {
     req.flash("errors", "Wrong credentials");
     res.redirect("/login");
@@ -48,7 +47,8 @@ router.post("/register", (req, res) => {
   registerForm.handle(req, {
     success: async (newForm) => {
       try {
-        await Users.create(
+        const svc = new UsersService();
+        await svc.register(
           newForm.data.username,
           newForm.data.password,
           newForm.data.image_url

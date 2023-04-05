@@ -41,6 +41,8 @@ router.get("/transactions", async (req, res) => {
   const svc = new TransactionsService(req.session.user.name);
   const txns = await svc.listTransactions();
 
+  console.log(txns);
+
   res.render("bank/transactions", {
     transactions: txns,
   });
